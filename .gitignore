@@ -1,4 +1,4 @@
 # fif files are the eeg data files
 *.fif
-
+*.csv
 *.swp

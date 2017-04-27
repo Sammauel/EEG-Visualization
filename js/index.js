@@ -1,44 +1,20 @@
 
-// var svg = d3.select("svg"),
-//   margin = {top: 20, right: 20, bottom: 30, left: 50},
-//   width = +svg.attr("width") - margin.left - margin.right,
-//   height = +svg.attr("height") - margin.top - margin.bottom,
-//   g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// var x = d3.scaleTime()
-//     .rangeRound([0, width]);
-
-// var y = d3.scaleLinear()
-//     .rangeRound([height, 0]);
-
-
-
-// set the dimensions and margins of the graph
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-// parse the date / time
-var parseTime = d3.timeParse("%d-%b-%y");
+var svg = d3.select("svg"),
+    margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = svg.attr("width") - margin.left - margin.right,
+    height = svg.attr("height") - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // set the ranges
-var x = d3.scaleTime().range([0, width]);
-var y = d3.scaleLinear().range([height, 0]);
+var x = d3.scaleLinear().range([0, width]),
+    y = d3.scaleLinear().range([height, 0]),
+    z = d3.scaleOrdinal(d3.schemeCategory10);
 
 // define the line
-var valueline = d3.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.close); });
-
-// append the svg obgect to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+var line = d3.line()
+    .curve(d3.curveBasis)
+    .x(function(d) { return x(d.time); })
+    .y(function(d) { return y(d.value); });
 
 // Get the data
 // d3.csv("suj28_l2nap_day1.csv", function(error, data) {

@@ -1,6 +1,6 @@
 
 var svg = d3.select("svg"),
-    margin = {top: 20, right: 80, bottom: 30, left: 50},
+    margin = {top: 20, right: 80, bottom: 80, left: 110},
     width = svg.attr("width") - margin.left - margin.right,
     height = svg.attr("height") - margin.top - margin.bottom,
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -51,6 +51,14 @@ d3.csv("test.csv", type, function(error, data) {
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
 
+  // Draw text label for x-axis
+  g.append("text")             
+      .attr("transform",
+            "translate(" + (width/2) + " ," + 
+                           (height + margin.top + 20) + ")")
+      .style("text-anchor", "middle")
+      .text("Time (ms)");
+
   // Draw y axis
   g.append("g")
       .attr("class", "axis axis--y")
@@ -61,6 +69,15 @@ d3.csv("test.csv", type, function(error, data) {
       .attr("dy", "0.71em")
       .attr("fill", "#000")
       .text("");
+
+  // Draw text label for y-axis
+  g.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Value"); 
 
   // Add line path
   var channel = g.selectAll(".channel")

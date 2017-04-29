@@ -1,0 +1,8 @@
+MANIFEST.in
+eeg/__init__.py
+eeg/eeg.py
+eeg.egg-info/PKG-INFO
+eeg.egg-info/SOURCES.txt
+eeg.egg-info/dependency_links.txt
+eeg.egg-info/requires.txt
+eeg.egg-info/top_level.txt

@@ -23,7 +23,7 @@ var line = d3.line()
 // Get the data
 // d3.csv("suj28_l2nap_day1.csv", function(error, data) {
 // d3.csv("data.csv", function(error, data) {
-d3.csv("test.csv", type, function(error, data) {
+d3.csv("../../test.csv", type, function(error, data) {
   if (error) {
     throw error;
   }

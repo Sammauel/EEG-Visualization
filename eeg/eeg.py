@@ -51,13 +51,11 @@ def close_db(error):
 
 @app.route('/')
 def index():
+  """Render the index page"""
   return render_template('index.html')
 
-@app.route('/asdf')
-def hello():
-  return 'hello world'
-
-@app.route('/<path:filename>')
+@app.route('/csv/<filename>')
 def send_csv(filename):
-  return send_from_directory(app.static_folder, filename)
+  """Serve csv file to client from server"""
+  return send_from_directory(app.static_folder + '/csv', filename)
   # return app.send_static_file('/static/csv/test.csv')

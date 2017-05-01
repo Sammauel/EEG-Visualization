@@ -21,9 +21,7 @@ var line = d3.line()
     .y(function(d) { return y(d.val); });
 
 // Get the data
-// d3.csv("suj28_l2nap_day1.csv", function(error, data) {
-// d3.csv("data.csv", function(error, data) {
-d3.csv("../../test.csv", type, function(error, data) {
+d3.csv("http://127.0.0.1:5000/csv/test.csv", type, function(error, data) {
   if (error) {
     throw error;
   }
@@ -101,8 +99,6 @@ d3.csv("../../test.csv", type, function(error, data) {
       .attr("dy", "0.35em")
       .style("font", "10px sans-serif")
       .text(function(d) { return d.id; });
-
-
 });
 
 function type(d, i, columns) {
@@ -119,7 +115,7 @@ let channels = ['Fp1', 'Fz', 'F3', 'F7', 'FT9', 'FC5', 'FC1', 'C3', 'T7', 'CP5',
                 'CP2', 'Cz', 'C4', 'T8', 'FT10', 'FC6', 'FC2', 'F4', 'F8', 'Fp2', 'AF7', 
                 'AF3', 'AFz', 'F1', 'F5', 'FT7', 'FC3', 'FCz', 'C1', 'C5', 'TP7', 'CP3',
                 'P1', 'P5', 'PO7', 'PO3', 'POz', 'PO4', 'PO8', 'P6', 'P2', 'CPz', 'CP4',
-                'TP8', 'C6', 'C2', 'FC4', 'FT8', 'F6', 'F2', 'LOc', 'ROc'
+                'TP8', 'C6', 'C2', 'FC4', 'FT8', 'F6', 'F2'
                 ];
 
 for (let i=0; i<channels.length; i++) {

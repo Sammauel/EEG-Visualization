@@ -6,7 +6,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 
 import numpy as np
 import mne
-%matplotlib inline
+# %matplotlib inline
 import matplotlib.pyplot as plt
 import scipy 
 from scipy.stats import hmean,trim_mean
@@ -68,8 +68,7 @@ def send_csv(filename):
   return send_from_directory(app.static_folder + '/csv', filename)
   # return app.send_static_file('/static/csv/test.csv')
 
-
 @app.route('/testmne')
 def test_mne():
-  raw = mne.io.read_raw_fif("suj28_l2nap_day1.fif")
-  return raw.ch_names
+  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
+  return raw.ch_names[0]

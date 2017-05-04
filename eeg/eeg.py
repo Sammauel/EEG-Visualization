@@ -4,6 +4,14 @@ import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash, send_from_directory
 
+import numpy as np
+import mne
+%matplotlib inline
+import matplotlib.pyplot as plt
+import scipy 
+from scipy.stats import hmean,trim_mean
+import pandas as pd
+
 app = Flask(__name__, static_folder='static') # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
 
@@ -59,3 +67,9 @@ def send_csv(filename):
   """Serve csv file to client from server"""
   return send_from_directory(app.static_folder + '/csv', filename)
   # return app.send_static_file('/static/csv/test.csv')
+
+
+@app.route('/testmne')
+def test_mne():
+  raw = mne.io.read_raw_fif("suj28_l2nap_day1.fif")
+  return raw.ch_names

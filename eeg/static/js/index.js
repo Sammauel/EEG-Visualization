@@ -21,7 +21,7 @@ var line = d3.line()
     .y(function(d) { return y(d.val); });
 
 // Get the data
-d3.csv("http://127.0.0.1:5000/csv/test.csv", type, function(error, data) {
+d3.csv("http://127.0.0.1:5000/csv/suj28_l2nap_day1_100ms.csv", type, function(error, data) {
   if (error) {
     throw error;
   }

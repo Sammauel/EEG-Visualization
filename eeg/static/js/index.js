@@ -25,29 +25,29 @@ var lineOverview = d3.line()
 
 // Mini chart 1
 var miniChart1 = d3.select("#mini_chart1"),
-    margin = {top: 20, right: 80, bottom: 80, left: 110},
-    width = miniChart1.attr("width") - margin.left - margin.right,
-    height = miniChart1.attr("height") - margin.top - margin.bottom,
-    gMiniChart1 = miniChart1.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    marginMiniChart1 = {top: 20, right: 80, bottom: 80, left: 110},
+    widthMiniChart1 = miniChart1.attr("width") - marginMiniChart1.left - marginMiniChart1.right,
+    heightMiniChart1 = miniChart1.attr("height") - marginMiniChart1.top - marginMiniChart1.bottom,
+    gMiniChart1 = miniChart1.append("g").attr("transform", "translate(" + marginMiniChart1.left + "," + margin.top + ")");
 
 // set the ranges
-// var x = d3.scaleLinear().range([0, width]),
-//     y = d3.scaleLinear().range([height, 0]),
-//     z = d3.scaleOrdinal(d3.schemeCategory10);
+var xMiniChart1 = d3.scaleLinear().range([0, widthMiniChart1]),
+    yMiniChart1 = d3.scaleLinear().range([heightMiniChart1, 0]),
+    zMiniChart1 = d3.scaleOrdinal(d3.schemeCategory10);
 
 // define the line
-var line = d3.line()
+var lineMiniChart1 = d3.line()
     .curve(d3.curveBasis)
-    .x(function(d) { return x(d.time); })
-    .y(function(d) { return y(d.val); });
+    .x(function(d) { return xMiniChart1(d.time); })
+    .y(function(d) { return yMiniChart1(d.val); });
 
 
 // Mini chart 2
 var miniChart2 = d3.select("#mini_chart2"),
-    margin = {top: 20, right: 80, bottom: 80, left: 110},
-    width = miniChart2.attr("width") - margin.left - margin.right,
-    height = miniChart2.attr("height") - margin.top - margin.bottom,
-    gminiChart2 = miniChart2.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    marginMiniChart2 = {top: 20, right: 80, bottom: 80, left: 110},
+    widthMiniChart2 = miniChart2.attr("width") - marginMiniChart2.left - marginMiniChart2.right,
+    heightMiniChart2 = miniChart2.attr("height") - marginMiniChart2.top - marginMiniChart2.bottom,
+    gMiniChart2 = miniChart2.append("g").attr("transform", "translate(" + marginMiniChart2.left + "," + margin.top + ")");
 
 // set the ranges
 // var x = d3.scaleLinear().range([0, width]),
@@ -55,10 +55,10 @@ var miniChart2 = d3.select("#mini_chart2"),
 //     z = d3.scaleOrdinal(d3.schemeCategory10);
 
 // define the line
-var line = d3.line()
+var lineMiniChart2 = d3.line()
     .curve(d3.curveBasis)
-    .x(function(d) { return x(d.time); })
-    .y(function(d) { return y(d.val); });
+    .x(function(d) { return xMiniChart2(d.time); })
+    .y(function(d) { return yMiniChart2(d.val); });
 
 // Get the data for initial graphs
 d3.csv("http://127.0.0.1:5000/csv/suj28_l2nap_day1_100ms.csv", type, function(error, data) {

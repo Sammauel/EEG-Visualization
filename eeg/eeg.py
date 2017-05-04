@@ -70,5 +70,5 @@ def send_csv(filename):
 
 @app.route('/testmne')
 def test_mne():
-  raw = mne.io.read_raw_fif("suj28_l2nap_day  1.fif")
-  return raw.ch_names
+  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
+  return raw.ch_names[0]

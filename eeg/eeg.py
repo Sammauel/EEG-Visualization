@@ -68,7 +68,23 @@ def send_csv(filename):
   return send_from_directory(app.static_folder + '/csv', filename)
   # return app.send_static_file('/static/csv/test.csv')
 
+@app.route('/json/<filename>')
+def send_json(filename):
+  """Serve json file to client from server"""
+  return send_from_directory(app.static_folder + '/json', filename)
+
 @app.route('/testmne')
 def test_mne():
   raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
   return raw.ch_names[0]
+
+@app.route('/fp1_button_clicked')
+def fp1_button_clicked():
+  """ Create json string with fp1 data here and send back to client"""
+  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
+  raw.load_data()
+  raw.resample(10)
+  df = raw.to_data_frame(picks=None, index=None, scale_time=1000.0, scalings=dict(eeg=1), copy=True, start=None, stop=None)
+  df.drop(df.columns[[61, 62]], axis=1, inplace=True)
+  
+  return "fp1 clicked..."

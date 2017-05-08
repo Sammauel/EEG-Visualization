@@ -85,6 +85,6 @@ def fp1_button_clicked():
   raw.load_data()
   raw.resample(10)
   df = raw.to_data_frame(picks=None, index=None, scale_time=1000.0, scalings=dict(eeg=1), copy=True, start=None, stop=None)
-  df.drop(df.columns[[61, 62]], axis=1, inplace=True)
-  
-  return "fp1 clicked..."
+  df.drop(df.columns[1:63], axis=1, inplace=True)
+  json_str = df.to_json(orient='index')
+  return json_str

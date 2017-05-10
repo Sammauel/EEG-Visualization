@@ -31,7 +31,7 @@ $("#Fp1-button").click(function() {
 
 function drawSubplot(channelName, htmlId) {
   console.log(htmlId);
-  var svg = d3.select(htmlId),
+  var svg = d3.select("#Fp1_chart"),
     margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
@@ -45,42 +45,47 @@ function drawSubplot(channelName, htmlId) {
   var y = d3.scaleLinear()
       .rangeRound([height, 0]);
 
-  // var line = d3.line()
-  //     .x(function(d) { return x(d.date); })
-  //     .y(function(d) { return y(d.close); });
+  var line = d3.line()
+      .x(function(d) { return x(d.time); })
+      .y(function(d) { return y(d.data[0]); });
+
+  // console.log("line...");
+  // console.log(line);
 
   var jsonUrl = "http://127.0.0.1:5000/fp1_button_clicked";
   d3.json(jsonUrl, function(error, data) {
     if (error) throw error;
 
-    console.log("printing data...");
-    console.log(data);
-    // x.domain(d3.extent(data, function(d) { return d.date; }));
-    // y.domain(d3.extent(data, function(d) { return d.close; }));
+    // console.log("printing data...");
+    // console.log(data);
 
-    // g.append("g")
-    //     .attr("transform", "translate(0," + height + ")")
-    //     .call(d3.axisBottom(x))
-    //   .select(".domain")
-    //     .remove();
+    x.domain(d3.extent(data, function(d) { return d.time; }});
+    y.domain(d3.extent(data, function(d) { return d.data; }));
+    
 
-    // g.append("g")
-    //     .call(d3.axisLeft(y))
-    //   .append("text")
-    //     .attr("fill", "#000")
-    //     .attr("transform", "rotate(-90)")
-    //     .attr("y", 6)
-    //     .attr("dy", "0.71em")
-    //     .attr("text-anchor", "end")
-    //     .text("Price ($)");
+    g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+      .select(".domain")
+        .remove();
 
-    // g.append("path")
-    //     .datum(data)
-    //     .attr("fill", "none")
-    //     .attr("stroke", "steelblue")
-    //     .attr("stroke-linejoin", "round")
-    //     .attr("stroke-linecap", "round")
-    //     .attr("stroke-width", 1.5)
-    //     .attr("d", line);
+    g.append("g")
+        .call(d3.axisLeft(y))
+      .append("text")
+        .attr("fill", "#000")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text(channelName);
+
+    g.append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 1.5)
+        .attr("d", line);
   });
 }

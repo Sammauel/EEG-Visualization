@@ -30,7 +30,7 @@ $(".channel_button").click(function() {
   var channelName = $(this).attr("id");
   channelName = channelName.substring(0, channelName.indexOf("-"))
   var htmlId = channelName + '_chart';
-
+  console.log("Channel: " + channelName);
   // Append svg to overview_plots div. We will draw plot on this svg.
   $("#overview_plots").append("<svg id=" + htmlId + " width='1800' height='80'></svg>")
   drawSubplot(channelName, htmlId);
@@ -55,7 +55,11 @@ function drawSubplot(channelName, htmlId) {
       .x(function(d) { return x(d.time); })
       .y(function(d) { return y(d.data[0]); });
 
-  var jsonUrl = "http://127.0.0.1:5000/fp1_button_clicked";
+  // Get channel index
+  var channelIndex = channels.indexOf(channelName);
+  console.log("channelIndex: " + channelIndex);
+
+  var jsonUrl = "http://127.0.0.1:5000/draw_overview_plot/" + channelIndex;
   d3.json(jsonUrl, function(error, data) {
     if (error) throw error;
 

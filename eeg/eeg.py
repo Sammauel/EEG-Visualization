@@ -64,6 +64,11 @@ def index():
   """Render the index page"""
   return render_template('index.html')
 
+@app.route('/js/<filename>')
+def send_js(filename):
+  """Serve js file to client from server"""
+  return send_from_directory(app.static_folder + '/js', filename)
+
 @app.route('/csv/<filename>')
 def send_csv(filename):
   """Serve csv file to client from server"""

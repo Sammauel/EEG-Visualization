@@ -3,15 +3,14 @@
     <head>
         <meta charset="utf-8">
         <title>EEG Data</title>
-        <link href='https://fonts.googleapis.com/css?family=Cinzel' rel='stylesheet' type='text/css'>
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
     </head>
     <body>
         <div id="channel_toggle_buttons"></div>
         <h1>Nap EEG</h1>
-        <svg id="Fp1_chart" width="1800" height="80"></svg>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <div id="overview_plots"></div>
+        <script src="http://127.0.0.1:5000/js/jquery-3.2.1.min.js"></script>
+        <script src="http://127.0.0.1:5000/js/d3.v4.min.js"></script>
         <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     </body>
 </html>

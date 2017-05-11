@@ -80,6 +80,11 @@ def send_json(filename):
   """Serve json file to client from server"""
   return send_from_directory(app.static_folder + '/json', filename)
 
+@app.route('/images/<filename>')
+def send_image(filename):
+  """Serve image file to client from server"""
+  return send_from_directory(app.static_folder + '/images', filename)
+
 @app.route('/testmne')
 def test_mne():
   raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")

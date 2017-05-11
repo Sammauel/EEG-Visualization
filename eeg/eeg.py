@@ -12,6 +12,8 @@ import scipy
 from scipy.stats import hmean,trim_mean
 import pandas as pd
 
+import json
+
 app = Flask(__name__, static_folder='static') # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
 
@@ -68,7 +70,25 @@ def send_csv(filename):
   return send_from_directory(app.static_folder + '/csv', filename)
   # return app.send_static_file('/static/csv/test.csv')
 
+@app.route('/json/<filename>')
+def send_json(filename):
+  """Serve json file to client from server"""
+  return send_from_directory(app.static_folder + '/json', filename)
+
 @app.route('/testmne')
 def test_mne():
   raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
   return raw.ch_names[0]
+
+@app.route('/fp1_button_clicked')
+def fp1_button_clicked():
+  """ Create json string with fp1 data here and send back to client"""
+  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
+  raw.load_data()
+  raw.resample(1)
+  df = raw.to_data_frame(picks=None, index=None, scale_time=1000.0, scalings=dict(eeg=1), copy=True, start=None, stop=None)
+  df.drop(df.columns[1:63], axis=1, inplace=True)
+  json_str = df.to_json(orient='split')
+  d = json.loads(json_str)
+  mod_json = [{"time": t, "data": d} for t, d in zip(d['index'], d['data'])]
+  return json.dumps(mod_json)

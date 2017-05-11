@@ -91,5 +91,4 @@ def fp1_button_clicked():
   json_str = df.to_json(orient='split')
   d = json.loads(json_str)
   mod_json = [{"time": t, "data": d} for t, d in zip(d['index'], d['data'])]
-  print(mod_json)
   return json.dumps(mod_json)

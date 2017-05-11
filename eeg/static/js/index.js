@@ -36,8 +36,6 @@ function drawSubplot(channelName, htmlId) {
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
- 
-  // var parseTime = d3.timeParse("%d-%b-%y");
 
   var x = d3.scaleLinear()
       .rangeRound([0, width]);
@@ -49,33 +47,27 @@ function drawSubplot(channelName, htmlId) {
       .x(function(d) { return x(d.time); })
       .y(function(d) { return y(d.data[0]); });
 
-  // console.log("line...");
-  // console.log(line);
-
   var jsonUrl = "http://127.0.0.1:5000/fp1_button_clicked";
   d3.json(jsonUrl, function(error, data) {
     if (error) throw error;
 
-    // console.log("printing data...");
-    // console.log(data);
-
-    x.domain(d3.extent(data, function(d) { return d.time; }});
+    x.domain(d3.extent(data, function(d) { return d.time; }));
     y.domain(d3.extent(data, function(d) { return d.data; }));
     
-
     g.append("g")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(x).ticks(0)
+          .tickSizeOuter(0))
       .select(".domain")
         .remove();
 
     g.append("g")
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y)
+          .ticks(0)
+          .tickSizeOuter(0))
       .append("text")
         .attr("fill", "#000")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", "0.71em")
+        .attr("transform", "translate(-5, 20)")
         .attr("text-anchor", "end")
         .text(channelName);
 

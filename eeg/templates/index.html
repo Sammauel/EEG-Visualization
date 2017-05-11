@@ -3,15 +3,28 @@
     <head>
         <meta charset="utf-8">
         <title>EEG Data</title>
-        <link href='https://fonts.googleapis.com/css?family=Cinzel' rel='stylesheet' type='text/css'>
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
     </head>
     <body>
-        <div id="channel_toggle_buttons"></div>
         <h1>Nap EEG</h1>
-        <svg id="Fp1_chart" width="1800" height="80"></svg>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <p>Click on a channel to see the overview plot</p>
+        <div id="channel_toggle_buttons"></div>
+        <img src="{{ url_for('static', filename='images/head-channels.jpg') }}" width="50%" height="50%">
+        <h3>Overview Plots</h3>
+        <div id="overview_plots"></div>
+        <h3>Zoomed in plots</h3>
+        <p>Enter a channel (case sensitive) and a time interval (in ms) to see a zoomed in plot</p>
+        <form action="/action_page.php">
+          Channel: <input type="text" name="channelname"><br>
+          Start time: <input type="text" name="starttime"><br>
+          End time: <input type="text" name="endtime"><br>
+          <input type="submit" value="Submit">
+        </form>
+        <div id="zoomed_plots"></div>
+        <h3>Spindle Information Plots</h3>
+        <div id="spindle_plots"></div>
+        <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/d3.v4.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     </body>
 </html>

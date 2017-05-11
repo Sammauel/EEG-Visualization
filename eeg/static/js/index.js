@@ -18,20 +18,26 @@ var channels = ['Fp1', 'Fz', 'F3', 'F7', 'FT9', 'FC5', 'FC1', 'C3', 'T7', 'CP5',
                 ];
 
 for (var i=0; i<channels.length; i++) {
-  $("#channel_toggle_buttons").append("<button id=" + channels[i] + "-button>" + channels[i] + "</button>");
+  $("#channel_toggle_buttons").append("<button class='channel_button' id=" + channels[i] + "-button>" + channels[i] + "</button>");
 
 }
 
-$("#Fp1-button").click(function() {
-  console.log("Fp1 button clicked...");
-  var channelName = "Fp1";
-  var htmlId = '#' + channelName + '_chart';
+$(".channel_button").click(function() {
+  console.log("Channel button clicked...");
+
+
+  // Get id of clicked elemented to get channel name
+  var channelName = $(this).attr("id");
+  channelName = channelName.substring(0, channelName.indexOf("-"))
+  var htmlId = channelName + '_chart';
+  console.log("Channel: " + channelName);
+  // Append svg to overview_plots div. We will draw plot on this svg.
+  $("#overview_plots").append("<svg id=" + htmlId + " width='1800' height='80'></svg>")
   drawSubplot(channelName, htmlId);
 });
 
 function drawSubplot(channelName, htmlId) {
-  console.log(htmlId);
-  var svg = d3.select("#Fp1_chart"),
+  var svg = d3.select("#" + htmlId),
     margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
@@ -43,11 +49,17 @@ function drawSubplot(channelName, htmlId) {
   var y = d3.scaleLinear()
       .rangeRound([height, 0]);
 
+  // Line for the plot.
+  // We use d.data[0] because d.data is an array with one element.
   var line = d3.line()
       .x(function(d) { return x(d.time); })
       .y(function(d) { return y(d.data[0]); });
 
-  var jsonUrl = "http://127.0.0.1:5000/fp1_button_clicked";
+  // Get channel index
+  var channelIndex = channels.indexOf(channelName);
+  console.log("channelIndex: " + channelIndex);
+
+  var jsonUrl = "http://127.0.0.1:5000/draw_overview_plot/" + channelIndex;
   d3.json(jsonUrl, function(error, data) {
     if (error) throw error;
 

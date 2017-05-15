@@ -32,11 +32,34 @@ $(".channel_button").click(function() {
   var htmlId = channelName + '_chart';
   console.log("Channel: " + channelName);
   // Append svg to overview_plots div. We will draw plot on this svg.
-  $("#overview_plots").append("<svg id=" + htmlId + " width='1800' height='80'></svg>")
+  // Height was 80
+  $("#overview_plots").append("<svg id=" + htmlId + " width='1800' height='500'></svg>")
   drawSubplot(channelName, htmlId);
 });
 
 function drawSubplot(channelName, htmlId) {
+  // Get channel index
+  var channelIndex = channels.indexOf(channelName);
+  var jsonUrl = "http://127.0.0.1:5000/draw_overview_plot/" + channelIndex;
+
+  queue()
+    .defer(d3.json, jsonUrl)
+    .await(ready);
+
+  function ready(error, data) {
+    if (error) throw error;
+
+    var svg = d3.select("#" + htmlId),
+    margin = {top: 30, right: 20, bottom: 150, left: 40},
+    margin2 = {top: 320, right: 20, bottom: 30, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom,
+    height2 = +svg.attr("height") - margin2.top - margin2.bottom;
+
+  }
+
+  // ########
+  // Code below will be removed later
   var svg = d3.select("#" + htmlId),
     margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = +svg.attr("width") - margin.left - margin.right,
@@ -55,11 +78,6 @@ function drawSubplot(channelName, htmlId) {
       .x(function(d) { return x(d.time); })
       .y(function(d) { return y(d.data[0]); });
 
-  // Get channel index
-  var channelIndex = channels.indexOf(channelName);
-  console.log("channelIndex: " + channelIndex);
-
-  var jsonUrl = "http://127.0.0.1:5000/draw_overview_plot/" + channelIndex;
   d3.json(jsonUrl, function(error, data) {
     if (error) throw error;
 

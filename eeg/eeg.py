@@ -87,13 +87,13 @@ def send_image(filename):
 
 @app.route('/testmne')
 def test_mne():
-  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
+  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj28_l2nap_day1_raw.fif")
   return raw.ch_names[0]
 
 @app.route('/draw_overview_plot/<channel_index>')
 def draw_overview_plot(channel_index):
   channel_index = int(channel_index)
-  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
+  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj28_l2nap_day1_raw.fif")
   raw.load_data()
   raw.resample(1)
   df = raw.to_data_frame(picks=None, index=None, scale_time=1000.0, scalings=dict(eeg=1), copy=True, start=None, stop=None)
@@ -110,7 +110,7 @@ def draw_overview_plot(channel_index):
 @app.route('/fp1_button_clicked')
 def fp1_button_clicked():
   """ Create json string with fp1 data here and send back to client"""
-  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj29_l5nap_day1_raw.fif")
+  raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj28_l2nap_day1_raw.fif")
   raw.load_data()
   raw.resample(1)
   df = raw.to_data_frame(picks=None, index=None, scale_time=1000.0, scalings=dict(eeg=1), copy=True, start=None, stop=None)

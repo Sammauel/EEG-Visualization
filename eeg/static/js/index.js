@@ -72,6 +72,89 @@ function drawSubplot(channelName, htmlId) {
     var line2 = d3.line()
       .x(function(d) { return x2(d.time); })
       .y(function(d) { return y2(d.data[0]); });
+
+    svg.append("defs").append("clipPath")
+      .attr("id", "clip")
+      .append("rect")
+      .attr("width", width)
+      .attr("height", height);
+
+    // Focus should be the zoomed part on top
+    var focus = svg.append("g")
+      .attr("class", "focus")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Context should be the 'minimap' below
+    var context = svg.append("g")
+      .attr("class", "context")
+      .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+    var leftHandle = 0;
+    var rightHandle = 1140;
+    
+    var currentExtent = [0,0]
+    
+    var brush = d3.brushX()
+      .extent([[leftHandle, 0], [rightHandle, height2]])
+      .on("brush start", updateCurrentExtent)
+      .on("brush end", brushed);
+    
+    var zoom = d3.zoom()
+      .scaleExtent([1, Infinity])
+      .translateExtent([[0, 0], [width, height]])
+      .extent([[0, 0], [width, height]])
+      .on("zoom", zoomed);
+
+    x.domain(d3.extent(data, function(d) { return d.time; }));
+    y.domain(d3.extent(data, function(d) { return d.data[0]; })); // might be d.data[0] or d.data
+    x2.domain(x.domain());
+    y2.domain(y.domain());
+
+    focus.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+    focus.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    focus.append("g")
+      .attr("class", "axis axis--y")
+      .call(yAxis);
+
+    context.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line2);
+
+    context.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height2 + ")")
+      .call(xAxis2);
+
+    context.append("g")
+      .attr("class", "brush")
+      .on("click", brushed)
+      .call(brush)
+      .call(brush.move, [new Date(2000,0,1),new Date(2001,0,1)].map(x));
+
+    // Zoom box in minimap
+    svg.append("rect")
+      .attr("class", "zoom")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      //.call(zoom);
+
+    function updateCurrentExtent() {
+      currentExtent = d3.brushSelection(this);
+    }
+
+    
+
+
   }
 
   // ########

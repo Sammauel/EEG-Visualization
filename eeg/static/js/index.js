@@ -49,13 +49,29 @@ function drawSubplot(channelName, htmlId) {
   function ready(error, data) {
     if (error) throw error;
 
-    var svg = d3.select("#" + htmlId),
-    margin = {top: 30, right: 20, bottom: 150, left: 40},
-    margin2 = {top: 320, right: 20, bottom: 30, left: 40},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    height2 = +svg.attr("height") - margin2.top - margin2.bottom;
+    var svg = d3.select("#" + htmlId);
+    var margin = {top: 30, right: 20, bottom: 150, left: 40};
+    var margin2 = {top: 320, right: 20, bottom: 30, left: 40};
+    var width = +svg.attr("width") - margin.left - margin.right;
+    var height = +svg.attr("height") - margin.top - margin.bottom;
+    var height2 = +svg.attr("height") - margin2.top - margin2.bottom;
 
+    var x = d3.scaleTime().range([0, width]);
+    var x2 = d3.scaleTime().range([0, width]);
+    var y = d3.scaleLinear().range([height, 0]);
+    var y2 = d3.scaleLinear().range([height2, 0]);
+
+    var xAxis = d3.axisBottom(x),
+    var xAxis2 = d3.axisBottom(x2),
+    var yAxis = d3.axisLeft(y);
+
+    var line = d3.line()
+      .x(function(d) { return x(d.time); })
+      .y(function(d) { return y(d.data[0]); });
+
+    var line2 = d3.line()
+      .x(function(d) { return x2(d.time); })
+      .y(function(d) { return y2(d.data[0]); });
   }
 
   // ########

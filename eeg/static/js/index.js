@@ -56,8 +56,8 @@ function drawSubplot(channelName, htmlId) {
     var height = +svg.attr("height") - margin.top - margin.bottom;
     var height2 = +svg.attr("height") - margin2.top - margin2.bottom;
 
-    var x = d3.scaleTime().range([0, width]);
-    var x2 = d3.scaleTime().range([0, width]);
+    var x = d3.scaleLinear().range([0, width]);
+    var x2 = d3.scaleLinear().range([0, width]);
     var y = d3.scaleLinear().range([height, 0]);
     var y2 = d3.scaleLinear().range([height2, 0]);
 
@@ -74,10 +74,10 @@ function drawSubplot(channelName, htmlId) {
       .y(function(d) { return y2(d.data[0]); });
 
     svg.append("defs").append("clipPath")
-      .attr("id", "clip")
-      .append("rect")
-      .attr("width", width)
-      .attr("height", height);
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height);
 
     // Focus should be the zoomed part on top
     var focus = svg.append("g")
@@ -111,47 +111,101 @@ function drawSubplot(channelName, htmlId) {
     y2.domain(y.domain());
 
     focus.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line);
+          .datum(data)
+          .attr("class", "line")
+          .attr("d", line);
 
     focus.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+          .attr("class", "axis axis--x")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis);
 
     focus.append("g")
-      .attr("class", "axis axis--y")
-      .call(yAxis);
+          .attr("class", "axis axis--y")
+          .call(yAxis);
 
     context.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line2);
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line2);
 
     context.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height2 + ")")
-      .call(xAxis2);
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height2 + ")")
+            .call(xAxis2);
 
     context.append("g")
-      .attr("class", "brush")
-      .on("click", brushed)
-      .call(brush)
-      .call(brush.move, [new Date(2000,0,1),new Date(2001,0,1)].map(x));
-
+            .attr("class", "brush")
+            .on("click", brushed)
+            .call(brush)
+            .call(brush.move, [0, 180000].map(x));
+  
     // Zoom box in minimap
     svg.append("rect")
-      .attr("class", "zoom")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-      //.call(zoom);
+        .attr("class", "zoom")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        //.call(zoom);
 
     function updateCurrentExtent() {
       currentExtent = d3.brushSelection(this);
     }
 
+    function brushed() {
+      if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") {
+        return;
+      }
+      var s = d3.event.selection;
+      
+      var p = currentExtent;
+      var xTime = x2(180000);
+      var left;
+      var right;
+      
+      if (d3.event.selection && s[1] - s[0] >= xTime) {
+        if (p[0] == s[0] && p[1] < s[1]) { // case where right handle is extended
+          if (s[1] >= width) {
+            left = width - xTime
+            right = width
+            s = [left, right];
+          }
+          else {
+            left = s[1] - xTime/2
+            right = s[1] + xTime/2
+            s = [left, right];
+          }
+        }
+        else if (p[1] == s[1] && p[0] > s[0]) { // case where left handle is extended
+          if (s[0] <= 0) {
+            s = [0, xTime];
+          }
+          else {
+            s = [s[0] - xTime/2, s[0] + xTime/2]
+          }
+        }
+      }
+      
+      if (!d3.event.selection) { // if no selection took place and the brush was just clicked
+        var mouse = d3.mouse(this)[0];
+        if (mouse < xTime/2) {
+          s = [0,xTime];
+        }
+        else if (mouse + xTime/2 > width) {
+          s = [width-xTime, width];
+        }
+        else {
+          s = [d3.mouse(this)[0]-xTime/2, d3.mouse(this)[0]+xTime/2];
+        }
+      }
+      
+      x.domain(s.map(x2.invert, x2));
+      focus.select(".line").attr("d", line);
+      focus.select(".axis--x").call(xAxis);
+      svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+                         .scale(width / (s[1] - s[0]))
+                         .translate(-s[0], 0));
+    }
     
 
 
@@ -191,22 +245,22 @@ function drawSubplot(channelName, htmlId) {
         .remove();
 
     g.append("g")
-        .call(d3.axisLeft(y)
-          .ticks(0)
-          .tickSizeOuter(0))
+      .call(d3.axisLeft(y)
+      .ticks(0)
+      .tickSizeOuter(0))
       .append("text")
-        .attr("fill", "#000")
-        .attr("transform", "translate(-5, 20)")
-        .attr("text-anchor", "end")
-        .text(channelName);
+      .attr("fill", "#000")
+      .attr("transform", "translate(-5, 20)")
+      .attr("text-anchor", "end")
+      .text(channelName);
 
     g.append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-linecap", "round")
-        .attr("stroke-width", 1.5)
-        .attr("d", line);
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 1.5)
+      .attr("d", line);
   });
 }

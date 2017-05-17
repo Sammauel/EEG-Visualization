@@ -6,7 +6,6 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 
 import numpy as np
 import mne
-# %matplotlib inline
 import matplotlib.pyplot as plt
 import scipy 
 from scipy.stats import hmean,trim_mean
@@ -15,6 +14,7 @@ import pandas as pd
 import json
 
 app = Flask(__name__, static_folder='static') # create the application instance :)
+
 app.config.from_object(__name__) # load config from this file , flaskr.py
 
 # Load default config and override config from an environment variable

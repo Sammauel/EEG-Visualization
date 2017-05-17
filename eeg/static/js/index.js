@@ -1,14 +1,6 @@
 'use strict';
 
-function type(d, i, columns) {
-  for (var i = 0, n = columns.length; i < n; ++i) d[columns[i]] = +d[columns[i]];
-  return d;
-}
-
-// ########
-// Buttons to toggle channels
-// ########
-
+// List of channel names
 var channels = ['Fp1', 'Fz', 'F3', 'F7', 'FT9', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 
                 'CP1', 'Pz', 'P3', 'P7', 'O1', 'Oz', 'O2', 'P4', 'P8', 'TP10', 'CP6',
                 'CP2', 'Cz', 'C4', 'T8', 'FT10', 'FC6', 'FC2', 'F4', 'F8', 'Fp2', 'AF7', 
@@ -17,14 +9,15 @@ var channels = ['Fp1', 'Fz', 'F3', 'F7', 'FT9', 'FC5', 'FC1', 'C3', 'T7', 'CP5',
                 'TP8', 'C6', 'C2', 'FC4', 'FT8', 'F6', 'F2'
                 ];
 
+// Create channel buttons
 for (var i=0; i<channels.length; i++) {
   $("#channel_toggle_buttons").append("<button class='channel_button' id=" + channels[i] + "-button>" + channels[i] + "</button>");
 
 }
 
+// Click event for channel buttons
 $(".channel_button").click(function() {
   console.log("Channel button clicked...");
-
 
   // Get id of clicked elemented to get channel name
   var channelName = $(this).attr("id");
@@ -37,11 +30,13 @@ $(".channel_button").click(function() {
   drawSubplot(channelName, htmlId);
 });
 
+// Draw subplot when a channel button is clicked
 function drawSubplot(channelName, htmlId) {
   // Get channel index
   var channelIndex = channels.indexOf(channelName);
   var jsonUrl = "http://127.0.0.1:5000/draw_overview_plot/" + channelIndex;
 
+  // d3 queue - https://github.com/d3/d3-queue
   queue()
     .defer(d3.json, jsonUrl)
     .await(ready);
@@ -61,8 +56,8 @@ function drawSubplot(channelName, htmlId) {
     var y = d3.scaleLinear().range([height, 0]);
     var y2 = d3.scaleLinear().range([height2, 0]);
 
-    var xAxis = d3.axisBottom(x),
-    var xAxis2 = d3.axisBottom(x2),
+    var xAxis = d3.axisBottom(x);
+    var xAxis2 = d3.axisBottom(x2);
     var yAxis = d3.axisLeft(y);
 
     var line = d3.line()
@@ -206,61 +201,20 @@ function drawSubplot(channelName, htmlId) {
                          .scale(width / (s[1] - s[0]))
                          .translate(-s[0], 0));
     }
-    
 
+    function zoomed() {
+      if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") {
+        return; // ignore zoom-by-brush
+      }
+      var t = d3.event.transform;
+      x.domain(t.rescaleX(x2).domain());
+      focus.select(".line").attr("d", line);
+      focus.select(".axis--x").call(xAxis);
+      context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
+    }
+  
 
   }
 
-  // ########
-  // Code below will be removed later
-  var svg = d3.select("#" + htmlId),
-    margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  var x = d3.scaleLinear()
-      .rangeRound([0, width]);
-
-  var y = d3.scaleLinear()
-      .rangeRound([height, 0]);
-
-  // Line for the plot.
-  // We use d.data[0] because d.data is an array with one element.
-  var line = d3.line()
-      .x(function(d) { return x(d.time); })
-      .y(function(d) { return y(d.data[0]); });
-
-  d3.json(jsonUrl, function(error, data) {
-    if (error) throw error;
-
-    x.domain(d3.extent(data, function(d) { return d.time; }));
-    y.domain(d3.extent(data, function(d) { return d.data; }));
-    
-    g.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).ticks(0)
-          .tickSizeOuter(0))
-      .select(".domain")
-        .remove();
-
-    g.append("g")
-      .call(d3.axisLeft(y)
-      .ticks(0)
-      .tickSizeOuter(0))
-      .append("text")
-      .attr("fill", "#000")
-      .attr("transform", "translate(-5, 20)")
-      .attr("text-anchor", "end")
-      .text(channelName);
-
-    g.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 1.5)
-      .attr("d", line);
-  });
 }

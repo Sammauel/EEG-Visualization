@@ -73,6 +73,11 @@ def about():
   """Render the about page"""
   return render_template('about.html')
 
+@app.route('/contact')
+def contact():
+  """Render the contact page"""
+  return render_template('contact.html')
+
 @app.route('/js/<filename>')
 def send_js(filename):
   """Serve js file to client from server"""

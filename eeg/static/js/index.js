@@ -1,18 +1,19 @@
 'use strict';
 
 // List of channel names
-var channels = ['Fp1', 'Fz', 'F3', 'F7', 'FT9', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 
-                'CP1', 'Pz', 'P3', 'P7', 'O1', 'Oz', 'O2', 'P4', 'P8', 'TP10', 'CP6',
-                'CP2', 'Cz', 'C4', 'T8', 'FT10', 'FC6', 'FC2', 'F4', 'F8', 'Fp2', 'AF7', 
-                'AF3', 'AFz', 'F1', 'F5', 'FT7', 'FC3', 'FCz', 'C1', 'C5', 'TP7', 'CP3',
-                'P1', 'P5', 'PO7', 'PO3', 'POz', 'PO4', 'PO8', 'P6', 'P2', 'CPz', 'CP4',
-                'TP8', 'C6', 'C2', 'FC4', 'FT8', 'F6', 'F2'
-                ];
+var channels = ['F3','F4','C3','C4','O1','O2'];
+
+// var channels = ['Fp1', 'Fz', 'F3', 'F7', 'FT9', 'FC5', 'FC1', 'C3', 'T7', 'CP5', 
+//                 'CP1', 'Pz', 'P3', 'P7', 'O1', 'Oz', 'O2', 'P4', 'P8', 'TP10', 'CP6',
+//                 'CP2', 'Cz', 'C4', 'T8', 'FT10', 'FC6', 'FC2', 'F4', 'F8', 'Fp2', 'AF7', 
+//                 'AF3', 'AFz', 'F1', 'F5', 'FT7', 'FC3', 'FCz', 'C1', 'C5', 'TP7', 'CP3',
+//                 'P1', 'P5', 'PO7', 'PO3', 'POz', 'PO4', 'PO8', 'P6', 'P2', 'CPz', 'CP4',
+//                 'TP8', 'C6', 'C2', 'FC4', 'FT8', 'F6', 'F2'
+//                 ];
 
 // Create channel buttons
 for (var i=0; i<channels.length; i++) {
   $("#channel_toggle_buttons").append("<button class='channel_button' id=" + channels[i] + "-button>" + channels[i] + "</button>");
-
 }
 
 // Click event for channel buttons
@@ -25,9 +26,11 @@ $(".channel_button").click(function() {
   var htmlId = channelName + '_chart';
   console.log("Channel: " + channelName);
   // Append svg to overview_plots div. We will draw plot on this svg.
-  // Height was 80
-  $("#overview_plots").append("<svg id=" + htmlId + " width='1800' height='500'></svg>")
+  $("#overview_plots").append("<h3>" + channelName + "</h3>");
+  $("#overview_plots").append("<svg id=" + htmlId + " width='960' height='500'></svg>");
   drawSubplot(channelName, htmlId);
+  $("#overview_plots").append("<svg id=spindles_" + htmlId + " width='960' height='100'></svg>");
+  drawSpindlePlot(channelName, htmlId);
 });
 
 // Draw subplot when a channel button is clicked
@@ -46,7 +49,7 @@ function drawSubplot(channelName, htmlId) {
 
     var svg = d3.select("#" + htmlId);
     var margin = {top: 30, right: 20, bottom: 150, left: 40};
-    var margin2 = {top: 320, right: 20, bottom: 30, left: 40};
+    var margin2 = {top: 370, right: 20, bottom: 80, left: 40};
     var width = +svg.attr("width") - margin.left - margin.right;
     var height = +svg.attr("height") - margin.top - margin.bottom;
     var height2 = +svg.attr("height") - margin2.top - margin2.bottom;
@@ -58,7 +61,8 @@ function drawSubplot(channelName, htmlId) {
 
     var xAxis = d3.axisBottom(x);
     var xAxis2 = d3.axisBottom(x2);
-    var yAxis = d3.axisLeft(y);
+    var yAxis = d3.axisLeft(y).ticks(0)
+      .tickSizeOuter(0);
 
     var line = d3.line()
       .x(function(d) { return x(d.time); })
@@ -101,7 +105,7 @@ function drawSubplot(channelName, htmlId) {
       .on("zoom", zoomed);
 
     x.domain(d3.extent(data, function(d) { return d.time; }));
-    y.domain(d3.extent(data, function(d) { return d.data[0]; })); // might be d.data[0] or d.data
+    y.domain(d3.extent(data, function(d) { return d.data[0]; }));
     x2.domain(x.domain());
     y2.domain(y.domain());
 
@@ -141,7 +145,6 @@ function drawSubplot(channelName, htmlId) {
         .attr("width", width)
         .attr("height", height)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        //.call(zoom);
 
     function updateCurrentExtent() {
       currentExtent = d3.brushSelection(this);
@@ -212,9 +215,56 @@ function drawSubplot(channelName, htmlId) {
       focus.select(".axis--x").call(xAxis);
       context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
     }
-  
-
   }
 
+}
 
+
+function drawSpindlePlot(channelName, htmlId) {
+  // Get channel index
+  var channelIndex = channels.indexOf(channelName);
+  var jsonUrl = "http://127.0.0.1:5000/json/spindle1.json";
+  var svg = d3.select("#spindles_" + htmlId),
+    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+
+  var x = d3.scaleLinear().rangeRound([0, width]);
+  var y = d3.scaleLinear().rangeRound([height, 0]);
+
+  var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  d3.json(jsonUrl, function(error, data) {
+    if (error) throw error;
+
+    x.domain([0, 1800]);
+    y.domain(d3.extent(data, function(d) { return d["Amplitude"]; }));
+
+    g.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    g.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y).ticks(0)
+          .tickSizeOuter(0))
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Frequency");
+
+    g.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d["Onset"]); })
+        .attr("y", function(d) { return y(d["Amplitude"]); })
+        .attr("fill", "steelblue")
+        .attr("width", 3)
+        .attr("height", function(d) { return height - y(d["Amplitude"]); });
+  });
 }

@@ -1,7 +1,7 @@
 appdirs==1.4.3
 click==6.7
 cycler==0.10.0
--e git+https://github.com/tshin1/EEG-Visualization.git@c2ae155064484a33f3d5a8ad9c894e8bed404bc5#egg=eeg
+-e git+https://github.com/tshin1/EEG-Visualization.git@915e84fd527f2b52bd41ed1699da95ba9838cdf7#egg=eeg
 Flask==0.12.1
 itsdangerous==0.24
 Jinja2==2.9.6
@@ -16,6 +16,8 @@ pyparsing==2.2.0
 pytest==3.0.7
 python-dateutil==2.6.0
 pytz==2017.2
+scikit-learn==0.18.1
 scipy==0.19.0
 six==1.10.0
+sklearn==0.0
 Werkzeug==0.12.1

@@ -6,15 +6,14 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 
 import numpy as np
 import mne
-# %matplotlib inline
 import matplotlib.pyplot as plt
 import scipy 
 from scipy.stats import hmean,trim_mean
 import pandas as pd
-
 import json
 
 app = Flask(__name__, static_folder='static') # create the application instance :)
+
 app.config.from_object(__name__) # load config from this file , flaskr.py
 
 # Load default config and override config from an environment variable
@@ -95,14 +94,14 @@ def draw_overview_plot(channel_index):
   channel_index = int(channel_index)
   raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj28_l2nap_day1_raw.fif")
   raw.load_data()
-  raw.resample(1)
+  raw.resample(100)
   df = raw.to_data_frame(picks=None, index=None, scale_time=1000.0, scalings=dict(eeg=1), copy=True, start=None, stop=None)
   df.drop(df.columns[channel_index+1:63], axis=1, inplace=True)
   df.drop(df.columns[0:channel_index], axis=1, inplace=True)
   json_str = df.to_json(orient='split')
-  print(json_str)
-  print("index...")
-  print(channel_index)
+  # print(json_str)
+  # print("index...")
+  # print(channel_index)
   d = json.loads(json_str)
   mod_json = [{"time": t, "data": d} for t, d in zip(d['index'], d['data'])]
   return json.dumps(mod_json)

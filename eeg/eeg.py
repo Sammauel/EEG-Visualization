@@ -60,8 +60,18 @@ def close_db(error):
 
 @app.route('/')
 def index():
-  """Render the index page"""
+  """Redirect to home page"""
+  return redirect(url_for('home'))
+
+@app.route('/home')
+def home():
+  """Render the home page"""
   return render_template('index.html')
+
+@app.route('/about')
+def about():
+  """Render the about page"""
+  return render_template('about.html')
 
 @app.route('/js/<filename>')
 def send_js(filename):

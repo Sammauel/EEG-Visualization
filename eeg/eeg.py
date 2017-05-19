@@ -94,7 +94,7 @@ def draw_overview_plot(channel_index):
   channel_index = int(channel_index)
   raw = mne.io.read_raw_fif(app.root_path + "/static/fif/suj28_l2nap_day1_raw.fif")
   raw.load_data()
-  raw.resample(1)
+  raw.resample(100)
   df = raw.to_data_frame(picks=None, index=None, scale_time=1000.0, scalings=dict(eeg=1), copy=True, start=None, stop=None)
   df.drop(df.columns[channel_index+1:63], axis=1, inplace=True)
   df.drop(df.columns[0:channel_index], axis=1, inplace=True)

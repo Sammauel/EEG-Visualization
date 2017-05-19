@@ -10,16 +10,7 @@
         <p>Click on a channel to see the overview plot</p>
         <div id="channel_toggle_buttons"></div>
         <img src="{{ url_for('static', filename='images/head-channels.jpg') }}" width="30%" height="30%">
-        <h3>Overview Plots</h3>
         <div id="overview_plots"></div>
-        <h3>Zoomed in plots</h3>
-        <p>Enter a channel (case sensitive) and a time interval (in ms) to see a zoomed in plot</p>
-        Channel: <input type="text" name="channelname"><br>
-        Start time: <input type="text" name="starttime"><br>
-        End time: <input type="text" name="endtime"><br>
-        <button name="button">Submit</button>
-        
-        <div id="zoomed_plots"></div>
         <h3>Spindle Information Plots</h3>
         <div id="spindle_plots"></div>
         <script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>

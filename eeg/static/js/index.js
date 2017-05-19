@@ -26,7 +26,8 @@ $(".channel_button").click(function() {
   console.log("Channel: " + channelName);
   // Append svg to overview_plots div. We will draw plot on this svg.
   // Height was 80
-  $("#overview_plots").append("<svg id=" + htmlId + " width='1800' height='500'></svg>")
+  $("#overview_plots").append("<h3>" + channelName + "</h3>");
+  $("#overview_plots").append("<svg id=" + htmlId + " width='960' height='500'></svg>");
   drawSubplot(channelName, htmlId);
 });
 
@@ -46,7 +47,7 @@ function drawSubplot(channelName, htmlId) {
 
     var svg = d3.select("#" + htmlId);
     var margin = {top: 30, right: 20, bottom: 150, left: 40};
-    var margin2 = {top: 320, right: 20, bottom: 30, left: 40};
+    var margin2 = {top: 370, right: 20, bottom: 80, left: 40};
     var width = +svg.attr("width") - margin.left - margin.right;
     var height = +svg.attr("height") - margin.top - margin.bottom;
     var height2 = +svg.attr("height") - margin2.top - margin2.bottom;

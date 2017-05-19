@@ -13,7 +13,7 @@ var channels = ['F3','F4','C3','C4','O1','O2'];
 
 // Create channel buttons
 for (var i=0; i<channels.length; i++) {
-  $("#channel_toggle_buttons").append("<button class='channel_button' id=" + channels[i] + "-button>" + channels[i] + "</button>");
+  $("#channel_toggle_buttons").append("<button class='btn btn-default channel_button' id=" + channels[i] + "-button>" + channels[i] + "</button>");
 }
 
 // Click event for channel buttons

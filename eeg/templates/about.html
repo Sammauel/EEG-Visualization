@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>EEG Data</title>
+    <title>About</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
   </head>
@@ -41,10 +41,14 @@
     <div class="container page-content">
         <div class="row">
             <div class="col-lg-12 text-center">
-              <p>Click on a channel to see plot</p>
-              <div id="channel_toggle_buttons"></div>
-              <img src="{{ url_for('static', filename='images/head-channels.jpg') }}" width="50%" height="50%">
-              <div id="overview_plots"></div>
+              <img src="http://www.medicalestudy.com/wp-content/uploads/2016/10/EEG.jpg" />
+              <h1>What is EEG?</h1>
+              <p>An electroencephalogram (EEG) is a test that detects electrical activity in your brain using small, flat metal discs (electrodes) attached to your scalp.</p>
+              <p>Your brain cells communicate via electrical impulses and are active all the time, even when you're asleep.</p>
+              <p>These test can provide information on potentially discovering if the patient has a brain disorder.</p>
+              <h1>Why should we care what happens when we sleep?</h1>
+              <p>The focus of this project was being able to represent a visualization of EEG recording that a professional will be able to look at and analyze potential spindles in a patient while he or she is sleeping during the recording period.</p>
+              <p>Sleep spindles are periods where the brain is inhibiting processing to keep the sleeper in a tranquil state.  Some of the conditions into what classifies a spindle is that while they may or may not be synchronous but have to be symmetrical and bilateral.</p>
             </div>
         </div>
         <!-- /.row -->

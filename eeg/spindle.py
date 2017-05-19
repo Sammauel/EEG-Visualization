@@ -8,6 +8,7 @@ from scipy.stats import hmean,trim_mean
 import mne
 from scipy import signal
 import matplotlib.pyplot as plt
+import json
 
 spindle_api = Blueprint('spindle_api', __name__)
 
@@ -15,7 +16,37 @@ spindle_api = Blueprint('spindle_api', __name__)
 def bye():
   return "bye"
 
-@spindle_api.route('')
+@spindle_api.route('/spindle_data')
+def spindle_data():
+  file_to_read = spindle_api.root_path + "/static/fif/suj28_l2nap_day1_raw.fif"
+  raw=mne.io.read_raw_fif(file_to_read,add_eeg_ref=False,preload=True)#loading the preprocessed data
+  raw.resample(500)
+  raw.filter(11,16)
+  channelList = ['F3','F4','C3','C4','O1','O2']
+  annotation = pd.read_csv(spindle_api.root_path + "/static/txt/suj28_nap_day1_edited_annotations.txt")
+  time_find,mean_peak_power,Duration,mph,mpl,auto_proba,auto_label=get_Onest_Amplitude_Duration_of_spindles(raw,
+                                                                          channelList,
+                                                                          moving_window_size=500,
+                                                                          annotations=annotation,
+                                                                          lower_threshold=.4,
+                                                                          higher_threshold=3.4,
+                                                                          syn_channels=3,
+                                                                          l_bound=0.5,
+                                                                          h_bound=2,
+                                                                          sleep_stage=True,
+                                                                          proba=True,
+                                                                          tol=1)
+
+  result = pd.DataFrame({"Onset":time_find,"Amplitude":mean_peak_power,'Duration':Duration})
+  result['Annotation'] = 'auto spindle'
+  print(result)
+  # result.head()
+  json_str = result.to_json(orient='split')
+  # return json_str
+  d = json.loads(json_str)
+  mod_json = [{"index": i, "Amplitude": d[0], "Duration": d[1], "Onset": d[2], "Annotation": d[3]} for i, d in zip(d['index'], d['data'])]
+  return json.dumps(mod_json)
+  #result.to_csv('spindle_detection_suj28.txt',index_label=False)
 
 
 #########################################
@@ -28,6 +59,7 @@ def window_rms(a, window_size):
     a2 = np.power(a,2)# sqaure all data points
     window = signal.gaussian(window_size,(window_size/.68)/2)# apply gaussian window with length of window_size samples
     return np.sqrt(np.convolve(a2, window, 'same')/len(a2)) * 1e2 # convolve along entire data and return root mean sqaures with the same length of the sample data
+
 def trimmed_std(data,percentile):
     temp=data.copy()
     temp.sort()
@@ -35,14 +67,17 @@ def trimmed_std(data,percentile):
     low = int(percentile * len(temp))
     high = int((1. - percentile) * len(temp))
     return temp[low:high].std(ddof=0)
+
 def stage_check(x):
     import re
     if re.compile('2',re.IGNORECASE).search(x):
         return True
     else:
         return False
+
 def intervalCheck(a,b,tol=0):#a is an array and b is a point
     return a[0]-tol <= b <= a[1]+tol
+
 def spindle_comparison(time_interval,spindle,spindle_duration,spindle_duration_fix=True):
     """
     Compare a spindle sample with the 2nd stage sleep intervals
@@ -59,6 +94,7 @@ def spindle_comparison(time_interval,spindle,spindle_duration,spindle_duration_f
         a = np.logical_or((intervalCheck(time_interval,spindle_start)),
                            (intervalCheck(time_interval,spindle_end)))
         return a
+
 def discritized_onset_label_auto(raw,df,spindle_segment,front=300,back=100):
     """
     Discritizing continoues time float to 0 or 1 segments with 3 seconds long
@@ -74,6 +110,7 @@ def discritized_onset_label_auto(raw,df,spindle_segment,front=300,back=100):
             if spindle_comparison(time_interval,spindle,spindle_duration[kk],spindle_duration_fix=False):
                 discritized_time_to_zero_one_labels[jj] = 1
     return discritized_time_to_zero_one_labels,discritized_time_intervals
+
 def get_Onest_Amplitude_Duration_of_spindles(raw,channelList,
                                         annotations=None,
                                         moving_window_size=200,
@@ -245,26 +282,3 @@ def get_Onest_Amplitude_Duration_of_spindles(raw,channelList,
     return time_find,mean_peak_power,Duration,mph,mpl,auto_proba,auto_label
 
 
-file_to_read = "suj28_l2nap_day1.fif"
-raw=mne.io.read_raw_fif(file_to_read,add_eeg_ref=False,preload=True)#loading the preprocessed data
-raw.resample(500)
-raw.filter(11,16)
-channelList = ['F3','F4','C3','C4','O1','O2']
-annotation = pd.read_csv('suj28_nap_day1_edited_annotations.txt')
-time_find,mean_peak_power,Duration,mph,mpl,auto_proba,auto_label=get_Onest_Amplitude_Duration_of_spindles(raw,
-                                                                        channelList,
-                                                                        moving_window_size=500,
-                                                                        annotations=annotation,
-                                                                        lower_threshold=.4,
-                                                                        higher_threshold=3.4,
-                                                                        syn_channels=3,
-                                                                        l_bound=0.5,
-                                                                        h_bound=2,
-                                                                        sleep_stage=True,
-                                                                        proba=True,
-                                                                        tol=1)
-
-result = pd.DataFrame({"Onset":time_find,"Amplitude":mean_peak_power,'Duration':Duration})
-result['Annotation'] = 'auto spindle'
-
-#result.to_csv('spindle_detection_suj28.txt',index_label=False)

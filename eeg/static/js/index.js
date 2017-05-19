@@ -29,6 +29,9 @@ $(".channel_button").click(function() {
   $("#overview_plots").append("<h3>" + channelName + "</h3>");
   $("#overview_plots").append("<svg id=" + htmlId + " width='960' height='500'></svg>");
   drawSubplot(channelName, htmlId);
+  $("#overview_plots").append("<p>Spindles</p>");
+  $("#overview_plots").append("<svg id=spindles_" + htmlId + " width='960' height='300'></svg>");
+  drawSpindlePlot(channelName, htmlId);
 });
 
 // Draw subplot when a channel button is clicked
@@ -218,4 +221,23 @@ function drawSubplot(channelName, htmlId) {
   }
 
 
+}
+
+
+function drawSubplot(channelName, htmlId) {
+  // Get channel index
+  var channelIndex = channels.indexOf(channelName);
+  var jsonUrl = "http://127.0.0.1:5000/json/spindle1.json" + channelIndex;
+  var svg = d3.select("#spindles_" + htmlId);,
+    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+
+  var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+    y = d3.scaleLinear().rangeRound([height, 0]);
+
+  var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    
 }

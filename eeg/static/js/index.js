@@ -81,13 +81,27 @@ function drawSubplot(channelName, htmlId) {
     // Focus should be the zoomed part on top
     var focus = svg.append("g")
       .attr("class", "focus")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .append("text") // Add axis text label
+      .attr("fill", "#000")
+      .attr("transform",
+            "translate(" + (width/2) + " ," + 
+                           (height + margin.top + 100) + ")")
+      .attr("text-anchor", "end")
+      .text("Time (ms)");
 
     // Context should be the 'minimap' below
     var context = svg.append("g")
       .attr("class", "context")
-      .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
-
+      .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")")
+      .append("text") // Add axis text label
+      .attr("fill", "#000")
+      .attr("transform",
+            "translate(" + (width/2) + " ," + 
+                           (height + margin.top + 20) + ")")
+      .attr("text-anchor", "end")
+      .text("Time (s)");
+      
     var leftHandle = 0;
     var rightHandle = 1140;
     

@@ -1,9 +1,13 @@
 # EEG-Visualization-
 This is the CCNY Csc Visualization final project for Professor Grossberg.
 
-Tech Stack: D3.js, jQuery
+Tech Stack: D3.js, jQuery, Flask, MNE, pandas
 
 Team Members: Sam and Ted
+
+### Running the Visualization Locally
+
+Activate virtualenv and run "pip install -r requirements.txt". Download raw data file from https://drive.google.com/open?id=0B1j4xFUQtHYFeUlFc0JjNk45azg to eeg/static/fif. Then run "source start.sh". Next run the command "flask run".
 
 ### Background and Motivation
 

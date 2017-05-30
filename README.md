@@ -5,15 +5,15 @@ Tech Stack: D3.js, jQuery, Flask, MNE, pandas
 
 Team Members: Sam and Ted
 
+### Running the Visualization Locally
+
+Activate virtualenv and run "pip install -r requirements.txt". Download raw data file from https://drive.google.com/open?id=0B1j4xFUQtHYFeUlFc0JjNk45azg to eeg/static/fif. Then run "source start.sh". Next run the command "flask run".
+
 ### Background and Motivation
 
 An electroencephalogram (EEG) is a noninvasive test that records electrical patterns in your brain. The test is used to help diagnose conditions such as seizures, epilepsy, head injuries, dizziness, headaches, brain tumors and sleeping problems. It can also be used to confirm brain death. - Mayfield: Brain and Spine
 
 The motivation of this project is based on curiosity of how the brain responds to certain conditions and how that is stimulated into data for research.  
-
-### Running the visualization locally
-
-Activate virtualenv and run "pip install -r requirements.txt". Download raw data file from https://drive.google.com/open?id=0B1j4xFUQtHYFeUlFc0JjNk45azg to eeg/static/fif. Then run "source start.sh". Next run the command "flask run".
 
 ### Project Objectives
 

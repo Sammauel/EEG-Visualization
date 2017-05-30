@@ -1,7 +1,7 @@
 appdirs==1.4.3
 click==6.7
 cycler==0.10.0
--e git+https://github.com/tshin1/EEG-Visualization.git@cd29c7327e6919e516254b935330671fdd1afe5c#egg=eeg
+-e git+https://github.com/tshin1/EEG-Visualization.git@de21c5827a7991bea065ba0cda74db9a57c0b114#egg=eeg
 Flask==0.12.1
 itsdangerous==0.24
 Jinja2==2.9.6

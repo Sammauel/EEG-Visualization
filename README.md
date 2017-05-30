@@ -1,7 +1,7 @@
 # EEG-Visualization-
 This is the CCNY Csc Visualization final project for Professor Grossberg.
 
-Tech Stack: D3.js, jQuery
+Tech Stack: D3.js, jQuery, Flask, MNE, pandas
 
 Team Members: Sam and Ted
 

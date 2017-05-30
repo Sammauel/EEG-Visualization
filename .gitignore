@@ -1,8 +1,8 @@
-*.fif
+*raw.fif
 *.csv
 *.swp
 *.pyc
-*.json
+test.json
 
 .ipynb_checkpoints/
 __pycache__/

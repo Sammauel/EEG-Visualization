@@ -1,0 +1,1 @@
+suj28_l2nap_day1_raw.fif should be downloaded to this directory from https://drive.google.com/open?id=0B1j4xFUQtHYFeUlFc0JjNk45azg

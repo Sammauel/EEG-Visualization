@@ -11,6 +11,10 @@ An electroencephalogram (EEG) is a noninvasive test that records electrical patt
 
 The motivation of this project is based on curiosity of how the brain responds to certain conditions and how that is stimulated into data for research.  
 
+### Running the visualization locally
+
+Activate virtualenv and run "pip install -r requirements.txt". Download raw data file from https://drive.google.com/open?id=0B1j4xFUQtHYFeUlFc0JjNk45azg to eeg/static/fif. Then run "source start.sh". Next run the command "flask run".
+
 ### Project Objectives
 
 The object of this project is to use EEG data provided and represent a visualization of the subject's brain wave and patterns on being able to inspect for Spindles.
